@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homelab 160</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Georgia", serif;
+            background: radial-gradient(circle, #1a0000, #000000);
+            color: #f5e6c8;
+            text-align: center;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: #2b0000;
+            padding: 15px;
+            border-bottom: 2px solid #ff4500;
+        }
+
+        nav a {
+            color: #ffae42;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #ff4500;
+            text-shadow: 0 0 10px #ff4500;
+        }
+
+        /* TITLE */
+        h1 {
+            font-size: 50px;
+            margin-top: 100px;
+            color: #ff4500;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff4500;
+        }
+
+        /* SUBTEXT */
+        p {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #f5e6c8;
+        }
+
+        /* SECTIONS */
+        .section {
+            display: none;
+            margin-top: 50px;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* FIRE BUTTON */
+        .btn {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background: #ff4500;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        .btn:hover {
+            background: #ff0000;
+            box-shadow: 0 0 20px #ff4500;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <a href="#" onclick="showSection('home')">Home</a>
+        <a href="#" onclick="showSection('projects')">Our Projects</a>
+    </nav>
+
+    <!-- HOME -->
+    <div id="home" class="section active">
+        <h1>Welcome to Homelab 160</h1>
+        <p>Your medieval tech fortress powered by fire 🔥</p>
+        <button class="btn">Enter the Lab</button>
+    </div>
+
+    <!-- PROJECTS -->
+    <div id="projects" class="section">
+        <h1>Our Projects</h1>
+        <p>⚔️ Servers • Networking • Cyber Lab • Experiments ⚔️</p>
+        <p>More coming soon...</p>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        function showSection(sectionId) {
+            let sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
