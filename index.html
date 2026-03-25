@@ -1,115 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homelab 160</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: "Georgia", serif;
-            background: radial-gradient(circle, #1a0000, #000000);
-            color: #f5e6c8;
-            text-align: center;
-        }
-
-        /* NAVBAR */
-        nav {
-            background: #2b0000;
-            padding: 15px;
-            border-bottom: 2px solid #ff4500;
-        }
-
-        nav a {
-            color: #ffae42;
-            text-decoration: none;
-            margin: 0 20px;
-            font-size: 18px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        nav a:hover {
-            color: #ff4500;
-            text-shadow: 0 0 10px #ff4500;
-        }
-
-        /* TITLE */
-        h1 {
-            font-size: 50px;
-            margin-top: 100px;
-            color: #ff4500;
-            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff4500;
-        }
-
-        /* SUBTEXT */
-        p {
-            font-size: 20px;
-            margin-top: 20px;
-            color: #f5e6c8;
-        }
-
-        /* SECTIONS */
-        .section {
-            display: none;
-            margin-top: 50px;
-        }
-
-        .active {
-            display: block;
-        }
-
-        /* FIRE BUTTON */
-        .btn {
-            margin-top: 30px;
-            padding: 10px 20px;
-            background: #ff4500;
-            border: none;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            box-shadow: 0 0 10px #ff0000;
-        }
-
-        .btn:hover {
-            background: #ff0000;
-            box-shadow: 0 0 20px #ff4500;
-        }
-    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Arcana Wiki — Community Knowledge</title>
+    <meta name="description" content="A modern, dark-first fandom-style wiki demo built with vanilla HTML/CSS/JS." />
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <a href="#main" class="skip-link visually-hidden">Skip to content</a>
+    <div id="app" class="root">
+        <header class="topnav" role="banner">
+            <div class="brand">
+                <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNav" type="button">☰</button>
+                <a href="#" class="logo">Arcana<span class="accent">Wiki</span></a>
+            </div>
+            <nav class="primary-nav" role="navigation" aria-label="Primary">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#categories" class="nav-link">Categories</a>
+                <a href="#trending" class="nav-link">Trending</a>
+                <a href="#about" class="nav-link">About</a>
+            </nav>
 
-    <!-- NAVBAR -->
-    <nav>
-        <a href="#" onclick="showSection('home')">Home</a>
-        <a href="#" onclick="showSection('projects')">Our Projects</a>
-    </nav>
+            <form class="search" role="search" aria-label="Search articles">
+                <label for="searchInput" class="visually-hidden">Search</label>
+                <input id="searchInput" class="search-input" type="search" placeholder="Search articles, characters, lore..." autocomplete="off">
+                <button class="search-btn" aria-label="Search" type="submit">🔍</button>
+            </form>
+        </header>
 
-    <!-- HOME -->
-    <div id="home" class="section active">
-        <h1>Welcome to Homelab 160</h1>
-        <p>Your medieval tech fortress powered by fire 🔥</p>
-        <button class="btn">Enter the Lab</button>
+        <div class="layout">
+            <aside class="sidebar" aria-label="Sidebar">
+                <div class="sidebar-inner">
+                    <div class="profile">
+                        <div class="avatar" aria-hidden="true"></div>
+                        <div>
+                            <div class="name">Community Hub</div>
+                            <div class="meta">Explore • Contribute • Discover</div>
+                        </div>
+                    </div>
+
+                    <nav class="quicklinks" aria-label="Quick links">
+                        <a href="#featured">Featured</a>
+                        <a href="#categories">Categories</a>
+                        <a href="#recent">Recent</a>
+                        <a href="#tags">Tags</a>
+                    </nav>
+
+                    <section class="sidebar-trending" aria-labelledby="side-trend">
+                        <h4 id="side-trend">Trending</h4>
+                        <ul>
+                            <li><a href="#">The Iron Citadel</a></li>
+                            <li><a href="#">Arcane Runes</a></li>
+                            <li><a href="#">Starborn Heroes</a></li>
+                        </ul>
+                    </section>
+                </div>
+            </aside>
+
+            <main class="content" id="main" role="main">
+                <section class="hero" id="home">
+                    <div class="hero-inner">
+                        <h1 class="hero-title">Arcana Wiki</h1>
+                        <p class="hero-sub">A community-driven compendium of worlds, characters, and stories.</p>
+                        <div class="hero-cta">
+                            <a href="#featured" class="btn primary">Explore Featured</a>
+                            <a href="#categories" class="btn ghost">Browse Categories</a>
+                        </div>
+                    </div>
+                    <div class="hero-art" aria-hidden="true"></div>
+                </section>
+
+                <section class="section" id="featured">
+                    <div class="section-header">
+                        <h2>Featured</h2>
+                        <div class="tabs" role="tablist" aria-label="Featured tabs">
+                            <button class="tab active" role="tab" aria-selected="true">All</button>
+                            <button class="tab" role="tab">Lore</button>
+                            <button class="tab" role="tab">Characters</button>
+                        </div>
+                    </div>
+
+                    <div class="card-grid">
+                        <article class="card" data-id="iron-citadel" tabindex="0">
+                            <div class="thumb" role="img" aria-label="Iron Citadel thumbnail"></div>
+                            <div class="card-body">
+                                <h3 class="card-title">The Iron Citadel</h3>
+                                <p class="card-excerpt">A fortress of legends where old machines and new faith collide.</p>
+                                <div class="card-meta">
+                                    <span class="badge">Lore</span>
+                                    <time datetime="2026-03-20">Mar 20, 2026</time>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="card" data-id="arcane-runes" tabindex="0">
+                            <div class="thumb small" role="img" aria-label="Arcane Runes thumbnail"></div>
+                            <div class="card-body">
+                                <h3 class="card-title">Arcane Runes</h3>
+                                <p class="card-excerpt">Mysterious symbols that shape reality for those who can read them.</p>
+                                <div class="card-meta">
+                                    <span class="badge">Magic</span>
+                                    <time datetime="2026-03-15">Mar 15, 2026</time>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="card" data-id="starborn-hero" tabindex="0">
+                            <div class="thumb" role="img" aria-label="Starborn Heroes thumbnail"></div>
+                            <div class="card-body">
+                                <h3 class="card-title">Starborn Heroes</h3>
+                                <p class="card-excerpt">Stories of travelers whose arrival signs great change.</p>
+                                <div class="card-meta">
+                                    <span class="badge">Characters</span>
+                                    <time datetime="2026-02-02">Feb 2, 2026</time>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="section" id="categories">
+                    <div class="section-header"><h2>Categories</h2></div>
+                    <div class="category-grid">
+                        <a class="category" href="#">Lore</a>
+                        <a class="category" href="#">Characters</a>
+                        <a class="category" href="#">Places</a>
+                        <a class="category" href="#">Items</a>
+                        <a class="category" href="#">Factions</a>
+                        <a class="category" href="#">Events</a>
+                    </div>
+                </section>
+
+                <section class="section" id="trending">
+                    <div class="section-header"><h2>Trending</h2></div>
+                    <div class="inline-list">
+                        <article class="mini-card">The Iron Citadel — new expedition</article>
+                        <article class="mini-card">Runes discovered in the North</article>
+                        <article class="mini-card">Starborn festival begins</article>
+                    </div>
+                </section>
+
+                <section class="section" id="recent">
+                    <div class="section-header"><h2>Recent updates</h2></div>
+                    <ul class="recent-list">
+                        <li>Updated: Arcane Runes — added history section</li>
+                        <li>New: Starborn Heroes profile</li>
+                        <li>Edited: Iron Citadel — maps improved</li>
+                    </ul>
+                </section>
+
+                <footer class="site-footer">
+                    <div>© 2026 Arcana Wiki • Built with HTML, CSS, JS</div>
+                    <div class="footer-links"><a href="#">Privacy</a> · <a href="#">Contribute</a></div>
+                </footer>
+            </main>
+        </div>
     </div>
 
-    <!-- PROJECTS -->
-    <div id="projects" class="section">
-        <h1>Our Projects</h1>
-        <p>⚔️ Servers • Networking • Cyber Lab • Experiments ⚔️</p>
-        <p>More coming soon...</p>
-    </div>
+    <!-- Article detail panel (hidden) -->
+    <div id="overlay" class="overlay" data-hidden="true"></div>
+    <aside id="articlePanel" class="article-panel" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="panel-inner">
+            <header class="panel-header">
+                <div>
+                    <h3 id="panelTitle">Article title</h3>
+                    <div class="panel-meta"><span id="panelAuthor"></span> • <time id="panelDate"></time></div>
+                </div>
+                <div class="panel-actions">
+                    <button id="panelClose" class="btn ghost" aria-label="Close article" type="button">✕</button>
+                </div>
+            </header>
 
-    <!-- SCRIPT -->
-    <script>
-        function showSection(sectionId) {
-            let sections = document.querySelectorAll('.section');
-            sections.forEach(sec => sec.classList.remove('active'));
+            <div id="panelBody" class="panel-body" tabindex="0"></div>
 
-            document.getElementById(sectionId).classList.add('active');
-        }
-    </script>
+            <section class="panel-related" aria-labelledby="relatedLabel">
+                <h4 id="relatedLabel">Related</h4>
+                <div id="relatedList" class="related-list"></div>
+            </section>
+        </div>
+    </aside>
 
+    <script src="app.js" defer></script>
 </body>
 </html>
