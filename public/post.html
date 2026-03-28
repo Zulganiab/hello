@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post - Community Forum</title>
+  <meta name="description" content="Read and discuss community posts.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">Community</a>
+      <button class="navbar-toggle" aria-label="Toggle navigation">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="groups.html">Groups</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="support.html">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="post-page">
+    <div class="container">
+      <article id="post-content">
+        <!-- Post will be loaded here -->
+        <div class="loading">
+          <div class="loading-spinner"></div>
+        </div>
+      </article>
+
+      <!-- Comments Section -->
+      <section class="comments-section" id="comments-section" style="display: none;">
+        <h2 class="comments-title">Discussion</h2>
+        
+        <!-- Comment Form -->
+        <form class="comment-form" id="comment-form">
+          <textarea 
+            class="comment-input" 
+            id="comment-text" 
+            placeholder="Share your thoughts..."
+            required
+          ></textarea>
+          <button type="submit" class="btn btn-primary comment-submit">Post Comment</button>
+        </form>
+
+        <!-- Comments List -->
+        <div class="comments-list" id="comments-list">
+          <!-- Comments will be loaded here -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2024 Community Forum. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="support.html">Support</a>
+        <a href="admin.html">Admin</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    const postId = new URLSearchParams(window.location.search).get('id');
+    
+    if (!postId) {
+      window.location.href = 'index.html';
+    }
+
+    // Load post
+    async function loadPost() {
+      const container = document.getElementById('post-content');
+      
+      try {
+        const post = await Community.getPost(postId);
+        document.title = `${post.title} - Community Forum`;
+        
+        container.innerHTML = `
+          <header class="post-header">
+            <a href="index.html" class="post-back">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Home
+            </a>
+            <div class="post-meta">
+              <a href="group.html?id=${post.groupId}" class="post-group-badge">${post.groupName}</a>
+              <time class="post-date">${Community.formatDate(post.createdAt)}</time>
+            </div>
+            <h1 class="post-title">${post.title}</h1>
+          </header>
+          ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-image">` : ''}
+          <div class="post-content">
+            ${post.content.split('\n').map(p => `<p>${p}</p>`).join('')}
+          </div>
+        `;
+        
+        // Show comments section
+        document.getElementById('comments-section').style.display = 'block';
+        loadComments();
+      } catch (error) {
+        console.error('Failed to load post:', error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">404</div>
+            <p class="empty-state-text">Post not found</p>
+            <a href="index.html" class="btn btn-primary mt-lg">Go to Home</a>
+          </div>
+        `;
+      }
+    }
+
+    // Load comments
+    async function loadComments() {
+      const container = document.getElementById('comments-list');
+      
+      try {
+        const comments = await Community.getComments(postId);
+        
+        if (comments.length === 0) {
+          container.innerHTML = '<p class="no-comments">No comments yet. Be the first to share your thoughts!</p>';
+          return;
+        }
+        
+        container.innerHTML = '';
+        comments.forEach(comment => {
+          container.appendChild(Community.createCommentElement(comment));
+        });
+      } catch (error) {
+        console.error('Failed to load comments:', error);
+        container.innerHTML = '<p class="no-comments">Failed to load comments</p>';
+      }
+    }
+
+    // Handle comment submission
+    document.getElementById('comment-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const textInput = document.getElementById('comment-text');
+      const text = textInput.value.trim();
+      
+      if (!text) return;
+      
+      try {
+        await Community.createComment({ postId, text });
+        textInput.value = '';
+        Community.showNotification('Comment posted successfully!');
+        loadComments();
+      } catch (error) {
+        console.error('Failed to post comment:', error);
+        Community.showNotification('Failed to post comment', 'error');
+      }
+    });
+
+    // Initialize
+    loadPost();
+  </script>
+</body>
+</html>

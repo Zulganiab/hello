@@ -1,0 +1,18 @@
+[
+  {
+    "id": "post-1",
+    "title": "Welcome to the Community",
+    "content": "This is the first post on our community platform. We're excited to have you here! Feel free to explore different groups and join the discussions that interest you. Our community is built on the principles of open discussion and knowledge sharing.",
+    "image": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800",
+    "groupId": "group-1",
+    "createdAt": "2024-01-15T10:00:00.000Z"
+  },
+  {
+    "id": "post-2",
+    "title": "Age of Empires IV Strategy Guide",
+    "content": "Master the art of warfare in Age of Empires IV with these essential strategies. Learn how to manage your economy efficiently, build the perfect army composition, and execute devastating attacks. From early game rush tactics to late game siege warfare, this guide covers it all.",
+    "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800",
+    "groupId": "group-2",
+    "createdAt": "2024-01-16T14:30:00.000Z"
+  }
+]

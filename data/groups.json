@@ -1,0 +1,26 @@
+[
+  {
+    "id": "group-1",
+    "name": "General",
+    "description": "General discussions and announcements for our community. Share news, updates, and anything that doesn't fit into other categories.",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "group-2",
+    "name": "Age of Empires",
+    "description": "Discuss strategies, share replays, and connect with fellow Age of Empires players. From AoE II to AoE IV, all titles welcome!",
+    "createdAt": "2024-01-02T00:00:00.000Z"
+  },
+  {
+    "id": "group-3",
+    "name": "Programming",
+    "description": "A space for developers to share knowledge, ask questions, and discuss programming languages, frameworks, and best practices.",
+    "createdAt": "2024-01-03T00:00:00.000Z"
+  },
+  {
+    "id": "group-4",
+    "name": "Book Club",
+    "description": "Share book recommendations, reviews, and discuss your favorite reads. From fiction to non-fiction, all genres are welcome.",
+    "createdAt": "2024-01-04T00:00:00.000Z"
+  }
+]

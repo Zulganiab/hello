@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Groups - Community Forum</title>
+  <meta name="description" content="Browse all community groups and find your interests.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">Community</a>
+      <button class="navbar-toggle" aria-label="Toggle navigation">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+      <ul class="navbar-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="groups.html" class="active">Groups</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="support.html">Support</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>Community Groups</h1>
+        <p>Find your community and join the conversation. Explore groups that match your interests.</p>
+      </div>
+    </section>
+
+    <!-- Groups Grid -->
+    <section class="container">
+      <div class="groups-grid" id="groups-container" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+        <!-- Groups will be loaded here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2024 Community Forum. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="support.html">Support</a>
+        <a href="admin.html">Admin</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Load groups
+    async function loadGroups() {
+      const container = document.getElementById('groups-container');
+      Community.showLoading(container);
+      
+      try {
+        const groups = await Community.getGroups();
+        if (groups.length === 0) {
+          Community.showEmpty(container, 'No groups available yet');
+          return;
+        }
+        
+        container.innerHTML = '';
+        groups.forEach(group => {
+          const card = document.createElement('div');
+          card.className = 'group-card';
+          card.onclick = () => window.location.href = `group.html?id=${group.id}`;
+          
+          card.innerHTML = `
+            <h3 class="group-card-name">${group.name}</h3>
+            <p class="group-card-description" style="-webkit-line-clamp: 4;">${group.description || 'No description available'}</p>
+            <p class="post-card-date mt-md">Created ${Community.formatDate(group.createdAt)}</p>
+          `;
+          
+          container.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Failed to load groups:', error);
+        Community.showEmpty(container, 'Failed to load groups');
+      }
+    }
+
+    // Initialize
+    loadGroups();
+  </script>
+</body>
+</html>
