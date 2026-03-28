@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "comment-1",
+    "postId": "post-1",
+    "text": "Great to be here! Looking forward to engaging with the community.",
+    "createdAt": "2024-01-15T12:00:00.000Z"
+  },
+  {
+    "id": "comment-2",
+    "postId": "post-1",
+    "text": "Welcome everyone! This platform looks amazing.",
+    "createdAt": "2024-01-15T13:30:00.000Z"
+  },
+  {
+    "id": "comment-3",
+    "postId": "post-2",
+    "text": "This strategy guide is exactly what I needed. Thanks for sharing!",
+    "createdAt": "2024-01-16T15:00:00.000Z"
+  },
+  {
+    "id": "comment-4",
+    "postId": "post-3",
+    "text": "TypeScript has really improved my code quality. Great introduction!",
+    "createdAt": "2024-01-17T10:00:00.000Z"
+  },
+  {
+    "id": "comment-5",
+    "postId": "post-4",
+    "text": "Dune is one of my all-time favorites. The world-building is incredible!",
+    "createdAt": "2024-01-18T18:00:00.000Z"
+  }
+]

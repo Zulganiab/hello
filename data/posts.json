@@ -14,5 +14,37 @@
     "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800",
     "groupId": "group-2",
     "createdAt": "2024-01-16T14:30:00.000Z"
+  },
+  {
+    "id": "post-3",
+    "title": "Getting Started with TypeScript",
+    "content": "TypeScript has become an essential tool for modern web development. In this post, we'll cover the basics of TypeScript, including type annotations, interfaces, generics, and how to set up a TypeScript project from scratch. Whether you're a JavaScript developer looking to level up or completely new to the language, this guide has something for you.",
+    "image": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800",
+    "groupId": "group-3",
+    "createdAt": "2024-01-17T09:15:00.000Z"
+  },
+  {
+    "id": "post-4",
+    "title": "Book Review: Dune by Frank Herbert",
+    "content": "Dune is a masterpiece of science fiction that has influenced countless works in the genre. Set on the desert planet Arrakis, the story follows Paul Atreides as he navigates political intrigue, religious prophecy, and the harsh environment of the spice-producing world. Herbert's world-building is unparalleled, creating a rich tapestry of cultures, religions, and ecosystems.",
+    "image": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800",
+    "groupId": "group-4",
+    "createdAt": "2024-01-18T16:45:00.000Z"
+  },
+  {
+    "id": "post-5",
+    "title": "Civilization Building Best Practices",
+    "content": "In Age of Empires, building a strong civilization requires careful planning and resource management. This guide covers optimal build orders, town center placement, and how to transition smoothly between ages. Learn from the pros and take your game to the next level.",
+    "image": "https://images.unsplash.com/photo-1493711662062-fa541f7f7b2d?w=800",
+    "groupId": "group-2",
+    "createdAt": "2024-01-19T11:20:00.000Z"
+  },
+  {
+    "id": "post-6",
+    "title": "Modern CSS Techniques in 2024",
+    "content": "CSS has evolved dramatically over the years. Container queries, cascade layers, and the new color spaces are just a few of the exciting features now available. This post explores the latest CSS capabilities and how to use them to create more responsive, maintainable stylesheets.",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800",
+    "groupId": "group-3",
+    "createdAt": "2024-01-20T08:00:00.000Z"
   }
 ]
