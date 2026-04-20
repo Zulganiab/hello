@@ -37,6 +37,8 @@ const COMMENTS_FILE = join(DATA_DIR, 'comments.json');
 const MESSAGES_FILE = join(DATA_DIR, 'messages.json');
 const ADMINS_FILE = join(DATA_DIR, 'admins.json');
 const SESSIONS_FILE = join(DATA_DIR, 'sessions.json');
+const PROJECTS_FILE = join(DATA_DIR, 'projects.json');
+const MEMBERS_FILE = join(DATA_DIR, 'members.json');
 
 // Migrate plaintext admin passwords to bcrypt hashes on startup
 async function migrateAdminPasswords() {
@@ -390,6 +392,127 @@ app.delete('/api/messages/:id', requireAdmin, async (req, res) => {
   }
 });
 
+// ==================== PROJECTS API ====================
+
+// GET all projects
+app.get('/api/projects', async (req, res) => {
+  try {
+    const projects = await readJSON(PROJECTS_FILE);
+    res.json(projects.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+});
+
+// GET project
+app.get('/api/projects/:id', async (req, res) => {
+  try {
+    const projects = await readJSON(PROJECTS_FILE);
+    const project = projects.find(p => p.id === req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch project' });
+  }
+});
+
+// POST create project (admin only)
+app.post('/api/projects', requireAdmin, async (req, res) => {
+  try {
+    const { title, description, image, glbUrl } = req.body;
+    if (!title || !description) return res.status(400).json({ error: 'Title and description required' });
+    const projects = await readJSON(PROJECTS_FILE);
+    const newProject = { id: crypto.randomUUID(), title, description, image: image||'', glbUrl: glbUrl||'', createdAt: new Date().toISOString() };
+    projects.push(newProject);
+    await writeJSON(PROJECTS_FILE, projects);
+    res.status(201).json(newProject);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create project' });
+  }
+});
+
+// PUT update project (admin only)
+app.put('/api/projects/:id', requireAdmin, async (req, res) => {
+  try {
+    const projects = await readJSON(PROJECTS_FILE);
+    const idx = projects.findIndex(p => p.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Project not found' });
+    const updated = { ...projects[idx], ...req.body };
+    projects[idx] = updated;
+    await writeJSON(PROJECTS_FILE, projects);
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update project' });
+  }
+});
+
+// DELETE project (admin only)
+app.delete('/api/projects/:id', requireAdmin, async (req, res) => {
+  try {
+    const projects = await readJSON(PROJECTS_FILE);
+    const filtered = projects.filter(p => p.id !== req.params.id);
+    if (filtered.length === projects.length) return res.status(404).json({ error: 'Project not found' });
+    await writeJSON(PROJECTS_FILE, filtered);
+    res.json({ message: 'Project deleted' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
+});
+
+// ==================== MEMBERS API ====================
+
+// GET members
+app.get('/api/members', async (req, res) => {
+  try {
+    const members = await readJSON(MEMBERS_FILE);
+    res.json(members.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)));
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch members' });
+  }
+});
+
+// POST add member (admin only)
+app.post('/api/members', requireAdmin, async (req, res) => {
+  try {
+    const { name, role, bio, avatar } = req.body;
+    if (!name || !role) return res.status(400).json({ error: 'Name and role required' });
+    const members = await readJSON(MEMBERS_FILE);
+    const newMember = { id: crypto.randomUUID(), name, role, bio: bio||'', avatar: avatar||'', createdAt: new Date().toISOString() };
+    members.push(newMember);
+    await writeJSON(MEMBERS_FILE, members);
+    res.status(201).json(newMember);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add member' });
+  }
+});
+
+// PUT update member (admin only)
+app.put('/api/members/:id', requireAdmin, async (req, res) => {
+  try {
+    const members = await readJSON(MEMBERS_FILE);
+    const idx = members.findIndex(m => m.id === req.params.id);
+    if (idx === -1) return res.status(404).json({ error: 'Member not found' });
+    members[idx] = { ...members[idx], ...req.body };
+    await writeJSON(MEMBERS_FILE, members);
+    res.json(members[idx]);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update member' });
+  }
+});
+
+// DELETE member (admin only)
+app.delete('/api/members/:id', requireAdmin, async (req, res) => {
+  try {
+    const members = await readJSON(MEMBERS_FILE);
+    const filtered = members.filter(m => m.id !== req.params.id);
+    if (filtered.length === members.length) return res.status(404).json({ error: 'Member not found' });
+    await writeJSON(MEMBERS_FILE, filtered);
+    res.json({ message: 'Member deleted' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete member' });
+  }
+});
+
 // ==================== ADMIN API ====================
 
 // Admin login
@@ -524,6 +647,13 @@ app.get('*', (req, res) => {
   res.sendFile(join(__dirname, '../public/index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+;(async () => {
+  try {
+    await migrateAdminPasswords();
+  } catch (err) {
+    console.error('Error during admin migration', err);
+  }
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+})()

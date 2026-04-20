@@ -2,7 +2,13 @@
   {
     "id": "admin-1",
     "username": "admin",
-    "password": "admin",
+    "password": "$2a$10$ueYkXEAREU5lY1g2yw0lTe.ej8utgy3tDl037sw3x/3LX/BD82uHm",
     "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "admin-2",
+    "username": "zulgani",
+    "password": "$2a$10$.yMCtrw.2v5wNpYWPZDqy.LFokZBgkfWtLbr8h8w4jU6feuMn6vPq",
+    "createdAt": "2026-04-20T00:00:00.000Z"
   }
 ]

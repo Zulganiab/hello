@@ -11,13 +11,13 @@
     "next": "13.4.10",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.5.4",
-    "postcss": "8.4.23",
-    "autoprefixer": "10.4.14",
-    "framer-motion": "10.12.16",
-    "lenis": "0.2.15",
-    "three": "0.164.0",
-    "@react-three/fiber": "8.13.2",
-    "@react-three/drei": "9.60.4"
+    "tailwindcss": "^3.4.8",
+    "postcss": "^8.4.23",
+    "autoprefixer": "^10.4.14",
+    "framer-motion": "^10.12.16",
+    "@studio-freight/lenis": "^0.2.17",
+    "three": "^0.164.0",
+    "@react-three/fiber": "^8.13.2",
+    "@react-three/drei": "^9.59.0"
   }
 }

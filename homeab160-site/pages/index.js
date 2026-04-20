@@ -7,6 +7,7 @@ import Features from '../components/Features'
 import About from '../components/About'
 import Services from '../components/Services'
 import Testimonials from '../components/Testimonials'
+import Portfolio from '../components/Portfolio'
 import Footer from '../components/Footer'
 
 export default function Home({ data }){
@@ -27,6 +28,7 @@ export default function Home({ data }){
         <Features features={data.features} />
         <Services services={data.services} />
         <About />
+        <Portfolio />
         <Testimonials testimonials={data.testimonials} />
       </main>
       <Footer />
