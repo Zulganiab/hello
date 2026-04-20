@@ -34,19 +34,16 @@ function isLoggedIn() {
 
 // ==================== API Functions ====================
 async function apiRequest(endpoint, options = {}) {
-  const token = getAuthToken();
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
   };
-  
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  
+
+  // Use cookie-based auth (httpOnly cookie) by including credentials
   const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
-    headers
+    headers,
+    credentials: 'include'
   });
   
   if (!response.ok) {
@@ -185,21 +182,19 @@ async function validateToken() {
 
 // ==================== Notification System ====================
 function showNotification(message, type = 'success') {
-  // Remove existing notification
   const existing = document.querySelector('.notification');
   if (existing) existing.remove();
-  
+
   const notification = document.createElement('div');
   notification.className = `notification ${type}`;
-  notification.innerHTML = `<span class="notification-message">${message}</span>`;
+  const span = document.createElement('span');
+  span.className = 'notification-message';
+  span.textContent = message;
+  notification.appendChild(span);
   document.body.appendChild(notification);
-  
-  // Trigger animation
-  requestAnimationFrame(() => {
-    notification.classList.add('show');
-  });
-  
-  // Auto remove
+
+  requestAnimationFrame(() => notification.classList.add('show'));
+
   setTimeout(() => {
     notification.classList.remove('show');
     setTimeout(() => notification.remove(), 300);
@@ -208,20 +203,28 @@ function showNotification(message, type = 'success') {
 
 // ==================== Loading State ====================
 function showLoading(container) {
-  container.innerHTML = `
-    <div class="loading">
-      <div class="loading-spinner"></div>
-    </div>
-  `;
+  container.innerHTML = '';
+  const wrapper = document.createElement('div');
+  wrapper.className = 'loading';
+  const spinner = document.createElement('div');
+  spinner.className = 'loading-spinner';
+  wrapper.appendChild(spinner);
+  container.appendChild(wrapper);
 }
 
 function showEmpty(container, message = 'No items found') {
-  container.innerHTML = `
-    <div class="empty-state">
-      <div class="empty-state-icon">📭</div>
-      <p class="empty-state-text">${message}</p>
-    </div>
-  `;
+  container.innerHTML = '';
+  const wrapper = document.createElement('div');
+  wrapper.className = 'empty-state';
+  const icon = document.createElement('div');
+  icon.className = 'empty-state-icon';
+  icon.textContent = '📭';
+  const p = document.createElement('p');
+  p.className = 'empty-state-text';
+  p.textContent = message;
+  wrapper.appendChild(icon);
+  wrapper.appendChild(p);
+  container.appendChild(wrapper);
 }
 
 // ==================== Navigation ====================
@@ -256,18 +259,42 @@ function initNavigation() {
 function createPostCard(post) {
   const card = document.createElement('article');
   card.className = 'post-card';
-  card.onclick = () => window.location.href = `post.html?id=${post.id}`;
-  
-  card.innerHTML = `
-    ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-card-image" loading="lazy">` : ''}
-    <div class="post-card-content">
-      <span class="post-card-group">${post.groupName}</span>
-      <h2 class="post-card-title">${post.title}</h2>
-      <p class="post-card-preview">${truncateText(post.content)}</p>
-      <time class="post-card-date">${formatDate(post.createdAt)}</time>
-    </div>
-  `;
-  
+  card.addEventListener('click', () => { window.location.href = `post.html?id=${post.id}`; });
+
+  if (post.image) {
+    const img = document.createElement('img');
+    img.src = post.image;
+    img.alt = post.title || '';
+    img.className = 'post-card-image';
+    img.loading = 'lazy';
+    card.appendChild(img);
+  }
+
+  const content = document.createElement('div');
+  content.className = 'post-card-content';
+
+  const groupSpan = document.createElement('span');
+  groupSpan.className = 'post-card-group';
+  groupSpan.textContent = post.groupName || '';
+
+  const h2 = document.createElement('h2');
+  h2.className = 'post-card-title';
+  h2.textContent = post.title || '';
+
+  const preview = document.createElement('p');
+  preview.className = 'post-card-preview';
+  preview.textContent = truncateText(post.content || '');
+
+  const timeEl = document.createElement('time');
+  timeEl.className = 'post-card-date';
+  timeEl.textContent = formatDate(post.createdAt);
+
+  content.appendChild(groupSpan);
+  content.appendChild(h2);
+  content.appendChild(preview);
+  content.appendChild(timeEl);
+  card.appendChild(content);
+
   return card;
 }
 
@@ -275,13 +302,18 @@ function createPostCard(post) {
 function createGroupCard(group) {
   const card = document.createElement('div');
   card.className = 'group-card';
-  card.onclick = () => window.location.href = `group.html?id=${group.id}`;
-  
-  card.innerHTML = `
-    <h3 class="group-card-name">${group.name}</h3>
-    <p class="group-card-description">${group.description || 'No description'}</p>
-  `;
-  
+  card.addEventListener('click', () => { window.location.href = `group.html?id=${group.id}`; });
+
+  const h3 = document.createElement('h3');
+  h3.className = 'group-card-name';
+  h3.textContent = group.name || '';
+
+  const p = document.createElement('p');
+  p.className = 'group-card-description';
+  p.textContent = group.description || 'No description';
+
+  card.appendChild(h3);
+  card.appendChild(p);
   return card;
 }
 
@@ -289,12 +321,14 @@ function createGroupCard(group) {
 function createCommentElement(comment) {
   const el = document.createElement('div');
   el.className = 'comment';
-  
-  el.innerHTML = `
-    <p class="comment-text">${comment.text}</p>
-    <time class="comment-date">${formatDate(comment.createdAt)}</time>
-  `;
-  
+  const p = document.createElement('p');
+  p.className = 'comment-text';
+  p.textContent = comment.text || '';
+  const timeEl = document.createElement('time');
+  timeEl.className = 'comment-date';
+  timeEl.textContent = formatDate(comment.createdAt);
+  el.appendChild(p);
+  el.appendChild(timeEl);
   return el;
 }
 

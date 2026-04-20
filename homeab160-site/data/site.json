@@ -1,0 +1,22 @@
+{
+  "features": [
+    {"icon": "⚡", "title": "Instant Setup", "desc": "Plug-and-play devices with intuitive onboarding."},
+    {"icon": "🔒", "title": "Privacy First", "desc": "Local-first controls, secure storage."},
+    {"icon": "🌐", "title": "Unified Control", "desc": "Manage everything from one sleek app."}
+  ],
+  "services": [
+    {"title": "Whole-home Automation", "desc": "Seamless scenes, scheduling, and presence-aware logic."},
+    {"title": "Climate & Energy", "desc": "Smart climate control with energy savings and analytics."},
+    {"title": "Security & Access", "desc": "Enterprise-grade security with local-first storage."}
+  ],
+  "testimonials": [
+    {"name": "Alex P", "text": "A flawless experience — our home feels magical."},
+    {"name": "S. Morgan", "text": "Design and privacy were the deciding factors."},
+    {"name": "Rina K", "text": "Reliable, fast, and beautiful to use."}
+  ],
+  "site": {
+    "title": "homeab160.uk — Premium Smart Home",
+    "description": "Luxury-grade smart home solutions for a connected, effortless living experience.",
+    "url": "https://homeab160.uk"
+  }
+}

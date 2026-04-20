@@ -1,0 +1,23 @@
+{
+  "name": "homeab160-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002"
+  },
+  "dependencies": {
+    "next": "13.4.10",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "3.5.4",
+    "postcss": "8.4.23",
+    "autoprefixer": "10.4.14",
+    "framer-motion": "10.12.16",
+    "lenis": "0.2.15",
+    "three": "0.164.0",
+    "@react-three/fiber": "8.13.2",
+    "@react-three/drei": "9.60.4"
+  }
+}

@@ -206,7 +206,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-content">
-      <p class="footer-text">&copy; 2024 Community Forum. All rights reserved.</p>
+      <p class="footer-text">&copy; 2026 Community Forum. All rights reserved.</p>
       <div class="footer-links">
         <a href="about.html">About</a>
         <a href="support.html">Support</a>
@@ -227,13 +227,10 @@
 
     // ==================== Auth Functions ====================
     async function checkAuth() {
-      if (Community.isLoggedIn()) {
-        const valid = await Community.validateToken();
-        if (valid) {
-          showDashboard();
-          return;
-        }
-        Community.clearAuthToken();
+      const valid = await Community.validateToken();
+      if (valid) {
+        showDashboard();
+        return;
       }
       showLogin();
     }
@@ -259,8 +256,7 @@
       const password = document.getElementById('password').value;
       
       try {
-        const response = await Community.adminLogin(username, password);
-        Community.setAuthToken(response.token);
+        await Community.adminLogin(username, password);
         Community.showNotification('Login successful!');
         showDashboard();
       } catch (error) {
@@ -275,7 +271,6 @@
       } catch (e) {
         // Ignore logout errors
       }
-      Community.clearAuthToken();
       Community.showNotification('Logged out');
       showLogin();
     });

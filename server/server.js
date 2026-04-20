@@ -4,6 +4,9 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import fs from 'fs/promises';
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
+import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,9 +15,19 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json({ limit: '100kb' }));
+app.use(cookieParser());
 app.use(express.static(join(__dirname, '../public')));
+
+// Basic rate limiter (quick win)
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 120, // limit each IP to 120 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false
+});
+app.use('/api/', apiLimiter);
 
 // Data paths
 const DATA_DIR = join(__dirname, '../data');
@@ -25,13 +38,42 @@ const MESSAGES_FILE = join(DATA_DIR, 'messages.json');
 const ADMINS_FILE = join(DATA_DIR, 'admins.json');
 const SESSIONS_FILE = join(DATA_DIR, 'sessions.json');
 
+// Migrate plaintext admin passwords to bcrypt hashes on startup
+async function migrateAdminPasswords() {
+  try {
+    const admins = await readJSON(ADMINS_FILE);
+    let changed = false;
+    const migrated = admins.map(a => {
+      if (a && typeof a.password === 'string' && !a.password.startsWith('$2')) {
+        // Hash plaintext password
+        a.password = bcrypt.hashSync(a.password, 10);
+        changed = true;
+      }
+      return a;
+    });
+    if (changed) {
+      await writeJSON(ADMINS_FILE, migrated);
+      console.log('Migrated plaintext admin passwords to bcrypt hashes');
+    }
+  } catch (err) {
+    console.error('Failed to migrate admin passwords', err);
+  }
+}
+
 // Helper functions
 async function readJSON(filePath) {
   try {
     const data = await fs.readFile(filePath, 'utf-8');
     return JSON.parse(data);
-  } catch {
-    return [];
+  } catch (err) {
+    // If file does not exist, return empty array. If it exists but cannot be parsed, surface the error.
+    try {
+      await fs.access(filePath);
+      console.error(`Failed to parse JSON file: ${filePath}`, err);
+      throw err;
+    } catch (_) {
+      return [];
+    }
   }
 }
 
@@ -63,7 +105,10 @@ async function validateSession(token) {
 
 // Auth middleware
 async function requireAdmin(req, res, next) {
-  const token = req.headers.authorization?.replace('Bearer ', '');
+  // Support token via Authorization header or httpOnly cookie named 'session'
+  const headerToken = req.headers.authorization?.replace('Bearer ', '') || null;
+  const cookieToken = req.cookies?.session || null;
+  const token = headerToken || cookieToken;
   const session = await validateSession(token);
   if (!session) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -352,12 +397,24 @@ app.post('/api/admin/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     const admins = await readJSON(ADMINS_FILE);
-    const admin = admins.find(a => a.username === username && a.password === password);
+    const admin = admins.find(a => a.username === username);
     if (!admin) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+    // Compare hashed password
+    const match = bcrypt.compareSync(password, admin.password);
+    if (!match) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
     const token = await createSession(admin.id);
-    res.json({ token, username: admin.username });
+    // Set httpOnly cookie for session token (development: secure=false)
+    res.cookie('session', token, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000
+    });
+    res.json({ username: admin.username });
   } catch (error) {
     res.status(500).json({ error: 'Login failed' });
   }
@@ -366,10 +423,12 @@ app.post('/api/admin/login', async (req, res) => {
 // Admin logout
 app.post('/api/admin/logout', requireAdmin, async (req, res) => {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.session;
     const sessions = await readJSON(SESSIONS_FILE);
     const filteredSessions = sessions.filter(s => s.token !== token);
     await writeJSON(SESSIONS_FILE, filteredSessions);
+    // Clear cookie
+    res.clearCookie('session');
     res.json({ message: 'Logged out' });
   } catch (error) {
     res.status(500).json({ error: 'Logout failed' });
@@ -390,7 +449,7 @@ app.post('/api/admin/add', requireAdmin, async (req, res) => {
     const newAdmin = {
       id: crypto.randomUUID(),
       username,
-      password,
+      password: bcrypt.hashSync(password, 10),
       createdAt: new Date().toISOString()
     };
     admins.push(newAdmin);
@@ -429,10 +488,15 @@ app.post('/api/admin/change-password', requireAdmin, async (req, res) => {
     }
     const admins = await readJSON(ADMINS_FILE);
     const adminIndex = admins.findIndex(a => a.id === req.adminId);
-    if (adminIndex === -1 || admins[adminIndex].password !== currentPassword) {
+    if (adminIndex === -1) {
       return res.status(401).json({ error: 'Current password is incorrect' });
     }
-    admins[adminIndex].password = newPassword;
+    const storedHash = admins[adminIndex].password;
+    const match = bcrypt.compareSync(currentPassword, storedHash);
+    if (!match) {
+      return res.status(401).json({ error: 'Current password is incorrect' });
+    }
+    admins[adminIndex].password = bcrypt.hashSync(newPassword, 10);
     await writeJSON(ADMINS_FILE, admins);
     res.json({ message: 'Password changed' });
   } catch (error) {
